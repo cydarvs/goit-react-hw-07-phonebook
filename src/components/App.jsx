@@ -1,16 +1,50 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+// import the actions see ../redux/actions
+import { addContact, deleteContact, setFilter } from '../redux/actions';
+// import selectors
+import { getContacts, getFilter } from '../redux/selectors';
+import { ContactForm } from './ContactForm/ContactForm';
+import { Filter } from './Filter/Filter';
+import { ContactList } from './ContactList/ContactList';
+
 export const App = () => {
+
+  const contacts = useSelector(getContacts);  // requires a function
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  const handleAddContact = newContact => {
+    // Placeholder for future Redux action
+    dispatch(addContact(newContact));  // we use dispatch
+  };
+
+  const handleDeleteContact = id => {
+    // Placeholder for future Redux action
+    dispatch(deleteContact(id));
+  };
+
+  const handleSetFilter = newFilter => {
+    // Placeholder for future Redux dispatch to update filter
+    dispatch(setFilter(newFilter));
+  };
+
+  // Calculate filtered contacts directly within the App component
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={handleAddContact} contacts={contacts} />
+
+      <h2>Contacts</h2>
+      <Filter filter={filter} setFilter={handleSetFilter} />
+      <ContactList
+        contacts={filteredContacts} // Passing the filteredContacts as prop
+        deleteContact={handleDeleteContact}
+      />
     </div>
   );
 };
