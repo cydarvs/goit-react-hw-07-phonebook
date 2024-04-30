@@ -20,14 +20,14 @@ export const contactsReducer = createReducer(initialContactsState, builder => {
   })
   .addCase(deleteContact, (state, action) => {
     // Filter out the contact to delete
-    const index = state.findIndex(contact => contact.id !== action.payload);
+    const index = state.findIndex(contact => contact.id === action.payload);
     if (index !== -1){
       state.splice(index , 1);
     }
   })
 });
 
-export const filterReducer = createReducer(initialContactsState, builder => {
+export const filterReducer = createReducer(initialFilterState, builder => {
   builder
   .addCase(setFilter, (state, action) => {
     // Set the filter state to the action payload
