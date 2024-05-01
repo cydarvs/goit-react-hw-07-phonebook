@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import the actions see ../redux/actions
-import { addContact, deleteContact, setFilter } from '../redux/actions';
+// import the actions see ../redux/actions  to slice
+import { addContact, deleteContact }  from '../redux/contactsSlice';
+import { setFilter } from '../redux/filterSlice';
+
 // import selectors
 import { getContacts, getFilter } from '../redux/selectors';
 import { ContactForm } from './ContactForm/ContactForm';

@@ -1,5 +1,5 @@
+// src/redux/contactsSlice.js
 import { createSlice, nanoid } from "@reduxjs/toolkit";
-
 
 // the initial state hard coded
 const initialContactsState = [
@@ -23,13 +23,13 @@ const initialContactsState = [
             }
         },
         deleteContact (state, action) {
-
+            const index = state.findIndex(contact => contact.id === action.payload);
+            if (index !== -1){
+                state.splice(index , 1);
+            }
         }
-
     }
+  });
 
-
-
-
-
-  })
+  export const { addContact, deleteContact } = contactsSlice.actions;
+  

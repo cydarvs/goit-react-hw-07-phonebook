@@ -1,20 +1,47 @@
 // new store.js using redux toolkit
-import { configureStore } from '@reduxjs/toolkit';
-import { contactsReducer } from './reducers';
-import { filterReducer } from './reducers';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { contactsSlice } from './contactsSlice';
+import { filterSlice } from './filterSlice';
 
-// import { contactsSlice } from './contactsSlice';
-// import { filterSlice } from './filterSlice';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+// Combine your reducer
+const rootReducer = combineReducers({
+  contacts: contactsSlice.reducer,
+  filter: filterSlice.reducer,
+});
+
+// Create the persist config object 
+const persistConfig = {
+  key: 'root',
+  storage,
+  // You can specify which part of your state you want to persist here 
+  whitelist: ['contacts'],
+};
+
+
+// Wrap your rootReducer with persistReducer
+const persistedReducer = persistReducer(persistConfig, rootReducer );
 
 export const store = configureStore({
-  reducer: {
-    contacts: contactsReducer,
-    filter: filterReducer,
-    // contacts: contactsSlice.reducer,
-    // filter: filterSlice.reducer,
-  },
-  // The middleware and devTools enhancer are automatically included by default, so you don't need to specify them.
+  reducer: persistedReducer,
+  middleware: getGetDefaultMiddleware =>
+  getGetDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
+
+export const persistor = persistStore(store);
+
+// Commented to use redux-persist
+// export const store = configureStore({
+//   reducer: {
+//     contacts: contactsSlice.reducer,
+//     filter: filterSlice.reducer,
+//   },
+//   // The middleware and devTools enhancer are automatically included by default, so you don't need to specify them.
+// });
 
 
 
