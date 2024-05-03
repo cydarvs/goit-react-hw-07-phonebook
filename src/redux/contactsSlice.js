@@ -1,5 +1,5 @@
 // src/redux/contactsSlice.js
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 // the initial state hard coded
 const initialContactsState = {
@@ -21,30 +21,11 @@ const initialContactsState = {
             state.error = null;
             state.contacts = action.payload;
         },
-        fetchingError(state){
+        fetchingError(state, action){
             state.isLoading = false;
             state.contacts = action.payload;
         },
     },
   });
 
-  export const { addContact, deleteContact } = contactsSlice.actions;
-  
-  /*
-
-  addContact: {
-            reducer(state, action){
-                state.push(action.payload);
-            },
-            prepare({ name, number }){
-                return { payload: { id: nanoid, name, number } };
-            }
-        },
-        deleteContact (state, action) {
-            const index = state.findIndex(contact => contact.id === action.payload);
-            if (index !== -1){
-                state.splice(index , 1);
-            }
-        }
-
-        */
+  export const { fetchingInProgress, fetchingSuccess, fetchingError } = contactsSlice.actions;
