@@ -5,18 +5,27 @@ import { fetchContacts, addContact, deleteContact } from '../redux/operations';
 import { setFilter } from '../redux/filterSlice';
 
 // import selectors
-import { getContacts, getFilter } from '../redux/selectors';
+import {
+  selectVisibleContacts,
+  selectIsLoading,
+  selectFilter,
+  selectError,
+} from '../redux/selectors';
+
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 
 export const App = () => {
 
-  const contacts = useSelector(getContacts);  // requires a function
-  const filter = useSelector(getFilter);
+  const visibleContacts = useSelector(selectVisibleContacts);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+  const filter = useSelector(selectFilter);
+
   const dispatch = useDispatch();
 
-  console.log('contacts', contacts);
+  console.log('visibleContacts', visibleContacts);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -37,22 +46,23 @@ export const App = () => {
     dispatch(setFilter(newFilter));
   };
 
-  // Calculate filtered contacts directly within the App component
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactForm addContact={handleAddContact} contacts={contacts} />
+      <ContactForm addContact={handleAddContact} contacts={visibleContacts} />
 
       <h2>Contacts</h2>
       <Filter filter={filter} setFilter={handleSetFilter} />
-      <ContactList
-        contacts={filteredContacts} // Passing the filteredContacts as prop
-        deleteContact={handleDeleteContact}
-      />
+      {isLoading && (
+        <b style={{ display: 'block', padding: '0 0 20px 10px' }}>Loading...</b>
+      )}
+      {error && <b>Error: {error}</b>}
+      {visibleContacts && (
+        <ContactList
+          contacts={visibleContacts}
+          deleteContact={handleDeleteContact}
+        />
+      )}
     </div>
   );
 };
