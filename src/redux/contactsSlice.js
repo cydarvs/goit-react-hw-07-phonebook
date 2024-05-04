@@ -1,5 +1,6 @@
 // src/redux/contactsSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { fetchContacts, addContact, deleteContact } from './operations';
 
 // the initial state hard coded
 const initialContactsState = {
@@ -8,24 +9,51 @@ const initialContactsState = {
     error: null,
 };
 
-
   export const contactsSlice = createSlice({
     name: 'contacts',
     initialState: initialContactsState,
-    reducers: {
-        fetchingInProgress(state){
+    reducers: {},
+    extraReducers: builder => {
+        builder
+          .addCase(fetchContacts.pending, state => {
             state.isLoading = true;
-        },
-        fetchingSuccess(state, action){
+          })
+          .addCase(fetchContacts.fulfilled, (state, action) => {
             state.isLoading = false;
             state.error = null;
             state.contacts = action.payload;
-        },
-        fetchingError(state, action){
+          })
+          .addCase(fetchContacts.rejected, (state, action) => {
             state.isLoading = false;
-            state.contacts = action.payload;
-        },
-    },
+            state.error = action.error.message;
+          })
+          .addCase(addContact.pending, state => {
+            state.isLoading = true;
+          })
+          .addCase(addContact.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.error = null;
+            state.contacts.push(action.payload);
+          })
+          .addCase(addContact.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message;
+          })
+          .addCase(deleteContact.pending, state => {
+            state.isLoading = true;
+          })
+          .addCase(deleteContact.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.contacts = state.contacts.filter(
+              contact => contact.id !== action.payload
+            );
+          })
+          .addCase(deleteContact.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.error.message;
+          });
+      },
   });
 
-  export const { fetchingInProgress, fetchingSuccess, fetchingError } = contactsSlice.actions;
+// Export actions
+export const contactsReducer = contactsSlice.reducer;

@@ -1,8 +1,7 @@
 import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // import the actions see ../redux/actions  to slice
-import { fetchContacts } from '../redux/operations';
-import { addContact, deleteContact }  from '../redux/contactsSlice';
+import { fetchContacts, addContact, deleteContact } from '../redux/operations';
 import { setFilter } from '../redux/filterSlice';
 
 // import selectors
@@ -25,12 +24,12 @@ export const App = () => {
 
   const handleAddContact = newContact => {
     // Placeholder for future Redux action
-    // dispatch(addContact(newContact));  // we use dispatch
+    dispatch(addContact(newContact));  // we use dispatch
   };
 
   const handleDeleteContact = id => {
     // Placeholder for future Redux action
-    // dispatch(deleteContact(id));
+    dispatch(deleteContact(id));
   };
 
   const handleSetFilter = newFilter => {

@@ -1,17 +1,44 @@
 import axios from 'axios';
-import { fetchingInProgress, fetchingSuccess, fetchingError } from './contactsSlice';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 axios.defaults.baseURL = 'https://6633a573f7d50bbd9b4a2f73.mockapi.io/api/';
 
-// create the asynchronous action generation
-export const fetchContacts = () => async dispatch => {
-    try {
-        // load indicator
-        dispatch(fetchingInProgress());             // while fetching in progress
-        // HTTP Request
-        const response = await axios.get('/contacts'); 
-        dispatch(fetchingSuccess(response.data));   // if completed fetching data dispatch fetch Success with the data
-    } catch (error) {
-        dispatch(fetchingError(error.message));     // if error occured while fetching data
+// Async thunk for fetching contacts
+export const fetchContacts = createAsyncThunk('contacts/fetchContacts', 
+    async (_, thunkAPI) => {  // Note: _, placeholder is put if no args like body passed, applicable to fetchContacts
+        try {
+            const response = await axios.get('/contacts');
+            return response.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message); // Reject the promise with the error message
+        }
     }
-};
+);   
+
+// Async thunk for adding a contact
+export const addContact = createAsyncThunk(
+    'contacts/addContact',
+    async (contactData, thunkAPI) => {
+      try {
+        const response = await axios.post('/contacts', contactData);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message); // Reject the promise with the error message
+      }
+    }
+  );
+  
+// Async thunk for deleting a contact
+export const deleteContact = createAsyncThunk(
+'contacts/deleteContact',
+async (contactId, thunkAPI) => {
+    try {
+    await axios.delete(`/contacts/${contactId}`);
+    return contactId; // Return the id to identify which contact was deleted
+    } catch (error) {
+    return thunkAPI.rejectWithValue(error.message); // Reject the promise with the error message
+    }
+}
+);
+
+
